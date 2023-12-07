@@ -1,6 +1,7 @@
-[gd_scene load_steps=20 format=3 uid="uid://kw62opumwkfr"]
+[gd_scene load_steps=21 format=3 uid="uid://kw62opumwkfr"]
 
 [ext_resource type="Script" path="res://scripts/world_gen/world_gen.gd" id="1_sekn6"]
+[ext_resource type="Script" path="res://scripts/multiplayer.gd" id="1_snne7"]
 [ext_resource type="Texture2D" uid="uid://doroin3s4nwup" path="res://assets/dirt_sprite_shit.png" id="2_j7vfd"]
 [ext_resource type="Texture2D" uid="uid://ou32vk8kbjrg" path="res://assets/tree.png" id="3_340ap"]
 [ext_resource type="PackedScene" uid="uid://brykbrbbcdouh" path="res://scenes/character.tscn" id="3_nuktr"]
@@ -278,78 +279,109 @@ metadata/_better_terrain = {
 "version": "0.2"
 }
 
-[node name="Terraria" type="Node2D"]
+[node name="Game" type="Node"]
+script = ExtResource("1_snne7")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+metadata/_edit_lock_ = true
+
+[node name="Net" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 0.0972222
+offset_left = -1.52588e-05
+grow_horizontal = 0
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="Options" type="HBoxContainer" parent="UI/Net"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/Net/Options"]
+layout_mode = 2
+text = "Direct:"
+
+[node name="Host" type="Button" parent="UI/Net/Options"]
+layout_mode = 2
+text = "Host"
+
+[node name="Connect" type="Button" parent="UI/Net/Options"]
+layout_mode = 2
+text = "Connect"
+
+[node name="Remote" type="LineEdit" parent="UI/Net/Options"]
+layout_mode = 2
+text = "127.0.0.1"
+
+[node name="Terraria" type="Node2D" parent="."]
 script = ExtResource("1_sekn6")
 noise_image = SubResource("NoiseTexture2D_fob1d")
 cave_text = SubResource("NoiseTexture2D_p8lrv")
 ore_text = SubResource("NoiseTexture2D_bgj8x")
 
-[node name="TileMap" type="TileMap" parent="."]
+[node name="TileMap" type="TileMap" parent="Terraria"]
 tile_set = SubResource("TileSet_rf7n8")
 format = 2
-layer_1/name = ""
-layer_1/enabled = true
-layer_1/modulate = Color(1, 1, 1, 1)
-layer_1/y_sort_enabled = false
-layer_1/y_sort_origin = 0
-layer_1/z_index = 0
 layer_1/tile_data = PackedInt32Array()
-layer_2/name = ""
-layer_2/enabled = true
-layer_2/modulate = Color(1, 1, 1, 1)
-layer_2/y_sort_enabled = false
-layer_2/y_sort_origin = 0
-layer_2/z_index = 0
 layer_2/tile_data = PackedInt32Array()
 
-[node name="CharacterBody2D" parent="." node_paths=PackedStringArray("tile_map") instance=ExtResource("3_nuktr")]
+[node name="CharacterBody2D" parent="Terraria" node_paths=PackedStringArray("tile_map") instance=ExtResource("3_nuktr")]
 position = Vector2(276, 2)
 tile_map = NodePath("../TileMap")
 
-[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+[node name="Camera2D" type="Camera2D" parent="Terraria/CharacterBody2D"]
 position = Vector2(2, -33)
 zoom = Vector2(0.375, 0.375)
 
-[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+[node name="ParallaxBackground" type="ParallaxBackground" parent="Terraria"]
 scroll_ignore_camera_zoom = true
 
-[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Terraria/ParallaxBackground"]
 position = Vector2(0, 200)
 motion_scale = Vector2(0.1, 0.1)
 motion_mirroring = Vector2(1024, 0)
 
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+[node name="Sprite2D" type="Sprite2D" parent="Terraria/ParallaxBackground/ParallaxLayer"]
 modulate = Color(1, 1, 1, 0.686275)
 position = Vector2(678, -381)
 texture = ExtResource("4_7sb26")
 offset = Vector2(-170, 150)
 
-[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="Terraria/ParallaxBackground"]
 position = Vector2(0, 100)
 motion_scale = Vector2(0.3, 0.3)
 motion_mirroring = Vector2(1024, 0)
 
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer2"]
+[node name="Sprite2D" type="Sprite2D" parent="Terraria/ParallaxBackground/ParallaxLayer2"]
 position = Vector2(685, -115)
 texture = ExtResource("5_hqabg")
 offset = Vector2(-170, 150)
 
-[node name="ParallaxLayer3" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="Terraria/ParallaxBackground"]
 position = Vector2(0, 100)
 motion_scale = Vector2(0.4, 0.4)
 motion_mirroring = Vector2(1024, 0)
 
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer3"]
+[node name="Sprite2D" type="Sprite2D" parent="Terraria/ParallaxBackground/ParallaxLayer3"]
 position = Vector2(687, -121)
 texture = ExtResource("6_cbwcr")
 offset = Vector2(-170, 150)
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Terraria"]
 
-[node name="CharacterBody2D2" parent="." node_paths=PackedStringArray("player") instance=ExtResource("8_64u04")]
+[node name="CharacterBody2D2" parent="Terraria" node_paths=PackedStringArray("player") instance=ExtResource("8_64u04")]
 position = Vector2(1186, -86)
 player = NodePath("../CharacterBody2D")
 
-[node name="CharacterBody2D3" parent="." node_paths=PackedStringArray("player") instance=ExtResource("8_64u04")]
+[node name="CharacterBody2D3" parent="Terraria" node_paths=PackedStringArray("player") instance=ExtResource("8_64u04")]
 position = Vector2(1755, -53)
 player = NodePath("../CharacterBody2D")
